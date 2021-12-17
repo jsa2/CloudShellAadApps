@@ -1,0 +1,54 @@
+// ////
+let pwInfo= servicePrincipalsUP
+| mv-expand ApplicationHasPassword
+|   mv-apply ApplicationHasPassword.endDateTime on   (
+    extend when =(datetime_diff('day',todatetime(ApplicationHasPassword_endDateTime),now()))
+    | extend HasExpiringPassword = when < 30
+    | extend info = ApplicationHasPassword_endDateTime
+)
+| extend expiredOrExpiringPW =strcat(HasExpiringPassword, ':', when)
+| summarize make_set(expiredOrExpiringPW) by appDisplayName, appId;
+let mstenant =  split("72f988bf-86f1-41af-91ab-2d7cd011db47,0d2db716-b331-4d7b-aa37-7f1ac9d35dae,f52f6d19-877e-4eaf-87da-9da27954c544,f8cdef31-a31e-4b4a-93e4-5f571e91255a",",");
+let roles=rolesUP
+| join kind=inner  (servicePrincipalsUP | project ['id'], resourceOrg = appOwnerOrganizationId, replyUrls, ApplicationHasRequiredAccess)  on $left.resourceId == $right.['id']
+| extend Principal = principalDisplayName
+| extend assigment = strcat(assignedRole)
+| extend clientDisplay = iff(principalType == "ServicePrincipal",Principal, resourceDisplayName)
+| extend assigmentL = parse_json(assignedRole)
+| mv-expand assigmentL
+| where isnotempty(assigmentL.value)
+| extend assigment = tostring(assigmentL.value)
+| extend clientMatch = iff(principalType contains "Group" or principalType contains "User", resourceId, principalId)
+| join kind=inner (servicePrincipalsUP | project ['id'], homeOrganization=appOwnerOrganizationId,replyUrls, owners, ApplicationHasRequiredAccess, appRoleAssignmentRequired) on $left.clientMatch == $right.['id']
+| extend AppType = case(mstenant contains homeOrganization and isnotempty( homeOrganization), 'Native MS', homeOrganization == home, "SingleTenant", isempty(homeOrganization), "managedIdentity", "MultiTenant")
+| extend RolescombinedAssignment = strcat(resourceDisplayName,' : permissions - ', principalType, ':Principal:', Principal,'-', assigment)
+| summarize make_set(RolescombinedAssignment) by clientDisplay, clientMatch, resourceOrg, AppType, tostring(owners), tostring(replyUrls), tostring(ApplicationHasRequiredAccess), appRoleAssignmentRequired
+| extend hasWritePermissions = iff(set_RolescombinedAssignment contains "write", "True", "False");
+//
+//
+//
+let users =oauth2PermissionGrantsUP
+| join kind=inner  servicePrincipalsUP on $left.clientId == $right.['id']
+| extend Principal = iff(isempty( principalId), consentType, userPrincipalName)
+| extend AppType = case(mstenant contains appOwnerOrganizationId, 'Native MS', appOwnerOrganizationId == home, "SingleTenant", "MultiTenant")
+| extend assigment = scope
+| extend principalId = iff(isempty( principalId), clientId, principalId)
+| extend UsersCombinedAssignment = strcat(Principal, '-', resourceDisplayName, ' : permissions - ', assigment)
+| summarize make_set(UsersCombinedAssignment) by clientDisplay = displayName, AppType, tostring(owners), appOwnerOrganizationId, servicePrincipalType, tostring(replyUrls), tostring(ApplicationHasRequiredAccess), appRoleAssignmentRequired
+| extend UserAdminGrant = iff(set_UsersCombinedAssignment contains "AllPrincipals", "True", "False")
+| extend hasWritePermissions = iff(set_UsersCombinedAssignment contains "write", "True", "False")
+| project-away servicePrincipalType;
+//Join all roles and apppermissions to user permissions
+let full = ['roles'] 
+| join kind=fullouter ['users'] on clientDisplay
+| where isnotempty( clientDisplay);
+//ensure user permissions that were not matched are on the same table
+let missed = ['users'] 
+| join kind=leftanti  ['full'] on clientDisplay;
+let f= union missed, full
+| extend appRegOwners = owners
+| project-away AppType1, clientDisplay1, hasWritePermissions1, appOwnerOrganizationId, owners, owners1, replyUrls1
+| join kind=fullouter  pwInfo on $left.clientDisplay == $right.appDisplayName
+| where isnotempty( clientDisplay)
+| extend hasExpiringOrExpiredPW = iff(tostring( set_expiredOrExpiringPW) contains "True", "True","False");
+f

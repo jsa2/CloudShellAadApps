@@ -1,0 +1,8 @@
+node_modules
+token.JSON
+*.json
+runtime.kql
+tid.txt
+# exclude from JSON flag
+!package.json
+!doNotRemove.json
