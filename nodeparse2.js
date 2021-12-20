@@ -30,19 +30,22 @@ spns.map( (item) =>{
     item.ApplicationHasRequiredAccess = pw?.requiredResourceAccess.map((res) => {
 
         var spm =spns.find((spn) => spn.appId == res.resourceAppId)
-        console.log(res)
+       
         res.resourceAccess = res?.resourceAccess || []
-        return res?.resourceAccess.map(({id}) => {
-        //console.log(id)
-            spm.appRoles = spm?.appRoles|| []
-            //console.log(spm.appRoles.length)
-            spm.oauth2PermissionScopes = spm?.oauth2PermissionScopes || []
-            var oauth2R = spm?.oauth2PermissionScopes.find((role) => role.id == id)
-           if (oauth2R) {
-               oauth2R.resource = spm?.appDisplayName || []
-               return oauth2R
-           }
-        }) || []
+        if (spm) {
+            return res?.resourceAccess.map(({id}) => {
+                    spm.appRoles = spm?.appRoles || []
+                    //console.log(spm.appRoles.length)
+                    spm.oauth2PermissionScopes = spm?.oauth2PermissionScopes || []
+                    var oauth2R = spm?.oauth2PermissionScopes.find((role) => role.id == id)
+                   if (oauth2R) {
+                       oauth2R.resource = spm?.appDisplayName || []
+                       return oauth2R
+                   }
+                }) || []
+        }
+        
+        
     }) 
     delete item.appRoles; delete item.oauth2PermissionScopes
 

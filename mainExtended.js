@@ -27,7 +27,7 @@ var token = await getToken()
            await wexc('node nodeparse2.js')
            //await wexc('node dynamicSend.js')
            console.log('creating query')
-           await wexc('node schemaForExternalData.js')
+           await wexc('node schemaForExternalDataExtended.js')
            console.log('open kql/runtime.kql')
        } catch (error) {
           console.log('faield', error)
