@@ -30,6 +30,7 @@ spns.map( (item) =>{
     item.ApplicationHasRequiredAccess = pw?.requiredResourceAccess.map((res) => {
 
         var spm =spns.find((spn) => spn.appId == res.resourceAppId)
+        console.log(res)
         res.resourceAccess = res?.resourceAccess || []
         return res?.resourceAccess.map(({id}) => {
         //console.log(id)
