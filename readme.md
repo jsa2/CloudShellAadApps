@@ -51,4 +51,10 @@ nvm use 14; node main.js
 cd Cloud CloudShellAadApps
 nvm use 14; node mainSignIns.js
 ```
+## Known issues
+### Continous Access Evaluation
+Azure CLI is unable to obtain new access tokens for sessions, that rely on IP restrictions and are targeteted by [strict enforcement](https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/concept-continuous-access-evaluation#ip-address-variation)
+``az account get-access-token --resource=https://graph.microsoft.com --query accessToken --output json`` 
+![image](https://user-images.githubusercontent.com/58001986/146808098-035dd7a9-1314-41fe-aa36-471988da634d.png)
+
 
