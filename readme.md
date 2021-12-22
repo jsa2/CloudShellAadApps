@@ -1,3 +1,19 @@
+
+- [DO NOT USE THIS TOOL. IT IS IN ALPHA STAGE, AND WE MADE PUBLIC REPO ONLY TO TEST IT OURSELVES IN CERTAIN SCRIPTED SCENARIOS](#do-not-use-this-tool-it-is-in-alpha-stage-and-we-made-public-repo-only-to-test-it-ourselves-in-certain-scripted-scenarios)
+  - [Consent Analytics solution](#consent-analytics-solution)
+    - [Illicit Consent Grant](#illicit-consent-grant)
+  - [Use cases](#use-cases)
+  - [Prerequisites](#prerequisites)
+    - [About the generated KQL](#about-the-generated-kql)
+  - [Running the tool](#running-the-tool)
+  - [After initial run](#after-initial-run)
+    - [Checking results again](#checking-results-again)
+    - [Checking with sign-ins](#checking-with-sign-ins)
+    - [Use existing storage account](#use-existing-storage-account)
+    - [Regenerate SAS tokens for existing data](#regenerate-sas-tokens-for-existing-data)
+  - [Known issues](#known-issues)
+    - [Continous Access Evaluation](#continous-access-evaluation)
+
 ## License
 
 [READ HERE](https://github.com/jsa2/CloudShellAadApps/blob/public/LICENSE)
@@ -40,12 +56,15 @@ Use Case Name | Notes
 
 ## Prerequisites 
 
-Requirement | description | Install
--|-|-
+Requirement | description |
+-|-
 ✅ Access to Azure Cloud Shell Bash | Uses pre-existing software on Azure CLI, Node etc 
-✅ Permissions to Azure subscription to create needed resources | Tool creates a storage account and a resource group 
-✅ User is Azure AD member |Cloud-only preferred 
+✅ Permissions to Azure subscription to create needed resources | Tool creates a storage account and a resource group. Possible also to use existing storage account. In both scenarios tool generates short lived read-only shared access links for the ``externalData()`` -[operator](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/externaldata-operator?pivots=azuredataexplorer#examples)
+✅ User is Azure AD member |Cloud-only preferred with read-only Azure AD permissions 
 
+### About the generated KQL
+- The query is valid for 10 minutes, as SAS tokens are only generated for 10 minutes
+- If you want to regenerate the query follow these  [steps](#regenerate-sas-tokens-for-existing-data)
 
 ## Running the tool
 
@@ -55,7 +74,7 @@ curl -o- https://raw.githubusercontent.com/jsa2/CloudShellAadApps/public/remote.
 ```
 
 ## After initial run
-
+- nvm use 14, is only needed in cloud shell
 ### Checking results again
 ```bash
 cd Cloud CloudShellAadApps
@@ -67,6 +86,25 @@ nvm use 14; node main.js
 cd Cloud CloudShellAadApps
 nvm use 14; node mainSignIns.js
 ```
+
+### Use existing storage account 
+```bash
+RG=existingRG
+storageAcc=myaccount
+git clone https://github.com/jsa2/CloudShellAadApps
+cd Cloud CloudShellAadApps
+az storage account show-connection-string -g $rg  -n  $storageAcc -o json  > src/config.json
+nvm use 14; node mainSignIns.js
+```
+
+### Regenerate SAS tokens for existing data
+```bash
+cd Cloud CloudShellAadApps
+nvm use 14; node schemaForExternalData.js
+code kql/runtime.kql
+```
+
+
 ## Known issues
 ### Continous Access Evaluation
 Azure CLI is unable to obtain new access tokens for sessions, that rely on IP restrictions and are targeteted by [strict enforcement](https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/concept-continuous-access-evaluation#ip-address-variation)
