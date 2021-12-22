@@ -81,6 +81,10 @@ curl -o- https://raw.githubusercontent.com/jsa2/CloudShellAadApps/public/remote.
 
 ## After initial run
 - nvm use 14, is only needed in cloud shell
+- If you are having problems with the tool start by ensuring, that existing installation of the tool does on exist in cloudShell: ``admin@Azure:~$ rm CloudShellAadApps/ -r -f`` 
+
+
+
 ### Checking results again
 ```bash
 cd Cloud CloudShellAadApps
@@ -95,11 +99,12 @@ nvm use 14; node mainSignIns.js
 
 ### Use existing storage account 
 ```bash
-RG=existingRG
-storageAcc=myaccount
+rg=queryStorage-23428
+storageAcc=storagehowrjcehuw
 git clone https://github.com/jsa2/CloudShellAadApps
-cd Cloud CloudShellAadApps
+cd CloudShellAadApps
 az storage account show-connection-string -g $rg  -n  $storageAcc -o json  > src/config.json
+npm install
 nvm use 14; node mainSignIns.js
 ```
 
@@ -109,6 +114,7 @@ cd Cloud CloudShellAadApps
 nvm use 14; node schemaForExternalData.js
 code kql/runtime.kql
 ```
+
 
 
 ## Known issues
