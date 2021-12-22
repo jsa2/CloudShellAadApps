@@ -105,7 +105,7 @@ git clone https://github.com/jsa2/CloudShellAadApps
 cd CloudShellAadApps
 az storage account show-connection-string -g $rg  -n  $storageAcc -o json  > src/config.json
 npm install
-nvm use 14; node mainSignIns.js
+nvm use 14; node main.js
 ```
 
 ### Regenerate SAS tokens for existing data
