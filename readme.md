@@ -29,7 +29,7 @@ There are two scenarios for attacker to pursue targeting individual users:
 Use Case Name | Notes
 -|-
 ✅ Inventory of apps and permissions | All Azure AD apps and the apps registered permissions including Workload Identities
-✅ Detect applications that share app and user permissions / scopes 
+✅ Detect applications that share app and user permissions / scopes | By default Apps that have delegated permissions should not include Application permissions
 ✅ Detect password use on applications, and expiring/expired passwords | [Two types of credentials available](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#authentication-two-options): password-based or certificate-based authentication
 ✅ Detect AppType (Managed, Multi, single etc) | [Tenancy in Azure AD](https://docs.microsoft.com/en-us/azure/active-directory/develop/single-and-multi-tenant-apps)
 ✅ Review replyURLs | Verify are there any malicious [reply URLs](https://docs.microsoft.com/en-us/azure/active-directory/develop/reply-url) used in the apps
