@@ -22,7 +22,7 @@
  
   ⚠ Only use this tool if you know what you are doing and have reviewed the code
 
-  ⚠ always use the tool first in test environments, with non-sensitive data
+  ⚠ Always test the tool first in test environments, with non-sensitive data
 
 ---
 As the licenses says, 0%  Liability 0% Warranty
