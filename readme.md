@@ -1,27 +1,33 @@
 
-- [DO NOT USE THIS TOOL. IT IS IN ALPHA STAGE, AND WE MADE PUBLIC REPO ONLY TO TEST IT OURSELVES IN CERTAIN SCRIPTED SCENARIOS](#do-not-use-this-tool-it-is-in-alpha-stage-and-we-made-public-repo-only-to-test-it-ourselves-in-certain-scripted-scenarios)
-  - [Consent Analytics solution](#consent-analytics-solution)
-    - [Illicit Consent Grant](#illicit-consent-grant)
-  - [Use cases](#use-cases)
-  - [Prerequisites](#prerequisites)
-    - [About the generated KQL](#about-the-generated-kql)
-  - [Running the tool](#running-the-tool)
-  - [After initial run](#after-initial-run)
-    - [Checking results again](#checking-results-again)
-    - [Checking with sign-ins](#checking-with-sign-ins)
-    - [Use existing storage account](#use-existing-storage-account)
-    - [Regenerate SAS tokens for existing data](#regenerate-sas-tokens-for-existing-data)
-  - [Known issues](#known-issues)
-    - [Continous Access Evaluation](#continous-access-evaluation)
+- [License](#license)
+- [Consent Analytics solution](#consent-analytics-solution)
+  - [Illicit Consent Grant](#illicit-consent-grant)
+- [Use cases](#use-cases)
+- [Prerequisites](#prerequisites)
+  - [About the generated KQL](#about-the-generated-kql)
+- [Running the tool](#running-the-tool)
+- [After initial run](#after-initial-run)
+  - [Checking results again](#checking-results-again)
+  - [Checking with sign-ins](#checking-with-sign-ins)
+  - [Use existing storage account](#use-existing-storage-account)
+  - [Regenerate SAS tokens for existing data](#regenerate-sas-tokens-for-existing-data)
+- [Known issues](#known-issues)
+  - [Continous Access Evaluation](#continous-access-evaluation)
 
 ## License
 
 [READ HERE](https://github.com/jsa2/CloudShellAadApps/blob/public/LICENSE)
 
-# DO NOT USE THIS TOOL. IT IS IN ALPHA STAGE, AND WE MADE PUBLIC REPO ONLY TO TEST IT OURSELVES IN CERTAIN SCRIPTED SCENARIOS
+---
+ 
+  ⚠ Only use this tool if you know what you are doing and have reviewed the code
 
+  ⚠ always use the tool first in test environments, with non-sensitive data
+
+---
 As the licenses says, 0%  Liability 0% Warranty
 
+---
 ## Consent Analytics solution
 Azure AD consent framework analysis is important step to strengthen security posture in every organization that is using Azure Active Directory. This tool was initially developed to analyze possible illicit consent grant attacks but has been developed further since to provide answers to the most typical security related questions around Azure AD integrated apps and permissions.
 
