@@ -51,7 +51,9 @@ function createContainer (container) {
         blobsvc.createContainerIfNotExists(container, (err,result) => {
            // console.log(result)
             
-            if (err) {return reject(err)}
+            if (err) {
+                return reject(err)
+            }
 
             return resolve(result)
         })
@@ -81,4 +83,4 @@ function createContainer (container) {
 }
 
 //reads()
-module.exports={createContainer,upload,getSasUrl}
+module.exports={createContainer,upload,getSasUrl,createContainer}
