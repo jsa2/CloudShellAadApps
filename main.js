@@ -1,14 +1,20 @@
 const { decode } = require("jsonwebtoken");
 const { main } = require("./Client2");
 const getToken = require("./src/getToken");
-const { runner } = require("./src/pluginRunner");
 const fs = require('fs');
 const { exec } = require("child_process");
+const { preCheck } = require("./precheck");
 const wexc = require('util').promisify(exec)
 
-run()
+run().catch((error) => {
+    console.log(error)
+})
 
 async function run () {
+
+await preCheck().catch((error) => {
+    return Promise.reject(`Unable to work due prerequisites failing: ${error}` )
+})
 
 var token = await getToken()
 

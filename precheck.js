@@ -1,7 +1,7 @@
 //const { createStorage } = require("./SchemaStorage");
 const getToken = require('./src/getToken')
-const {createContainer} = require('./src/src')
-async function main () {
+
+async function preCheck () {
 
     console.log('testing access tokens')
 
@@ -9,8 +9,11 @@ async function main () {
         throw new Error('Unable to work with Access Tokens',error)
     })
 
- 
     console.log('Az access ok',t.substring(0,15))
+
+    try {const {createContainer} = require('./src/src') } catch (error) {
+        return Promise.reject(`Unable to work with storage ${error}` )
+    }
 
     console.log('testing storage')
    var s =await createContainer('sdasdasdsarewrewrewre').catch(error => {
@@ -23,6 +26,4 @@ async function main () {
 }
 
 
-main().catch((error) => {
-    console.log(error)
-})
+module.exports={preCheck}
