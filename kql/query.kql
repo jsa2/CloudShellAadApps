@@ -1,4 +1,4 @@
-//////
+////////
 let pwInfo= servicePrincipalsUP
 | mv-expand ApplicationHasPassword
 |   mv-apply ApplicationHasPassword.endDateTime on   (
@@ -52,6 +52,7 @@ let f= union missed, full
 | project-away appDisplayName
 | where isnotempty( clientDisplay);
 f
-| join kind=fullouter  (['admins']  |project aadAdminRole=role, displayName)  on  $left.clientDisplay ==  $right.displayName
+| join kind=fullouter  (['admins']  |project aadAdminRole=role, displayName
+| summarize make_set(aadAdminRole) by displayName )  on  $left.clientDisplay ==  $right.displayName
 | where isnotempty( clientDisplay)
 | extend warningAppPriv =iff(AppType == "MultiTenant" and isnotempty( set_RolescombinedAssignment), "true","false")
