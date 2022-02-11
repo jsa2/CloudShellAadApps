@@ -24,10 +24,6 @@ var date = d2.toISOString()
 
     var token = await getToken()
 
-    /* var s = `auditLogs/signIns?$top=10&$filter=(createdDateTime ge 2021-10-15T08:32:19.823Z)`
-    var s = `auditLogs/signIns?$top=10&&$filter=signInEventTypes/any(t: t eq 'interactiveUser' or t eq 'nonInteractiveUser' or t eq 'servicePrincipal' or t eq 'managedIdentity')`
-    var s = `auditLogs/signIns?&$filter=signInEventTypes/any(t: t eq 'interactiveUser' or t eq 'nonInteractiveUser' or t eq 'servicePrincipal' or t eq 'managedIdentity') and (createdDateTime ge 2021-12-13T08:32:19.823Z)`
-     */
     var s = `auditLogs/signIns?&$filter=signInEventTypes/any(t: t eq 'interactiveUser' or t eq 'nonInteractiveUser' or t eq 'servicePrincipal' or t eq 'managedIdentity') and (createdDateTime ge ${date})`
 
     token.resource = "https://graph.microsoft.com"
