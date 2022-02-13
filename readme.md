@@ -154,4 +154,4 @@ If the identity you are using doesn't have Azure subscription access or has acce
 - az login --allow-no-subscriptions (no access to Azure subscriptions)
 - az login --tenant <tenant id> (If user has identity in multiple tenants)
 
-![./Pictures/Login-3.jpg](./Pictures/Login-3.jpg)
+![./Pictures/Login-3.JPG](./Pictures/Login-3.JPG)
