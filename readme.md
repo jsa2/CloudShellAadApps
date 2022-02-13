@@ -3,7 +3,7 @@
 - [Consent Analytics solution](#consent-analytics-solution)
   - [Illicit Consent Grant](#illicit-consent-grant)
 - [Use cases](#use-cases)
-- [intentional gaps](#intentional-gaps)
+- [Intentional gaps](#intentional-gaps)
 - [Prerequisites](#prerequisites)
   - [About the generated KQL](#about-the-generated-kql)
 - [Running the tool](#running-the-tool)
@@ -15,6 +15,7 @@
 - [Update log](#update-log)
 - [Known issues](#known-issues)
   - [Continous Access Evaluation](#continous-access-evaluation)
+  - [Multiple tenants](#multiple-tenants)
 
 ## License
 
@@ -31,7 +32,7 @@ As the licenses says, 0%  Liability 0% Warranty
 
 ---
 ## Consent Analytics solution
-Azure AD consent framework analysis is important step to strengthen security posture in every organization that is using Azure Active Directory. This tool was initially developed to analyze possible illicit consent grant attacks but has been developed further since to provide answers to the most typical security related questions around Azure AD integrated apps and permissions.
+Azure AD consent framework analysis is important step to strengthen security posture in every organization that is using Azure Active Directory. This tool was initially developed to analyze possible illicit consent grant attacks & in help of analyzing Azure AD consent grant framework but has been developed further since to provide answers to the most typical security related questions around Azure AD integrated apps and permissions.
 
 ### Illicit Consent Grant
 
@@ -59,10 +60,12 @@ Use Case Name | Notes
 ✅ Review replyURLs | Verify are there any malicious [reply URLs](https://docs.microsoft.com/en-us/azure/active-directory/develop/reply-url) used in the apps
 ✅ Detect recent sign-ins | Get insights on how apps are used in the organization (this API is setting not enabled by default)
 ✅ Detect servicePrincipals in admin roles | It is in most cases recommended to use API permissions instead of AAD roles 
+✅ Detect dangling redirect_uri | If the app service is deleted, but redirect_uri is not deleted from the Azure AD app registration, attacker could register the App Service instance for malicious intent.
+
 
 ![./Pictures/Results-2-1.jpg](./Pictures/Results-2-1.jpg)
 
-## intentional gaps
+## Intentional gaps
 ⚠️ There are also occurences where required ResourceAccess are configured on the apps, but no permissions are granted to users via user consent, or admin consent. These occurences do not show on the report. While they also have potential for abuse, they have no active permissions granted. (this does not concern app permissions)
 
 ## Prerequisites 
@@ -70,8 +73,8 @@ Use Case Name | Notes
 Requirement | description |
 -|-
 ✅ Access to Azure Cloud Shell Bash | Uses pre-existing software on Azure CLI, Node etc 
-✅ Permissions to Azure subscription to create needed resources | Tool creates a storage account and a resource group. Possible also to use existing storage account. In both scenarios tool generates short lived read-only shared access links for the ``externalData()`` -[operator](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/externaldata-operator?pivots=azuredataexplorer#examples)
-✅ User is Azure AD member |Cloud-only preferred with read-only Azure AD permissions 
+✅ Permissions to Azure subscription to create needed resources | Tool creates a storage account and a resource group. Possible also to use existing storage account. In both scenarios tool generates short lived read-only shared access links (SAS) for the ``externalData()`` -[operator](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/externaldata-operator?pivots=azuredataexplorer#examples)
+✅ User is Azure AD member |Cloud-only preferred with read-only Azure AD permissions. More permissions are needed if sign-in events are included 
 ✅ Existing Log Analytics Workspace | This is where you paste the output from this tool
 
 ### About the generated KQL
@@ -101,6 +104,7 @@ nvm use 14; node main.js
 ```
 
 ### Checking with sign-ins 
+If you want to include sign-ins login with the account that has necessary permissions defined to read sign-in logs
 ```bash
 cd Cloud CloudShellAadApps
 nvm use 14; node mainSignIns.js
@@ -144,3 +148,11 @@ code kql/runtime.kql
 Azure CLI is unable to obtain new access tokens for sessions, that rely on IP restrictions and are targeteted by [strict enforcement](https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/concept-continuous-access-evaluation#ip-address-variation)
 ``az account get-access-token --resource=https://graph.microsoft.com --query accessToken --output json`` 
 ![image](https://user-images.githubusercontent.com/58001986/146808098-035dd7a9-1314-41fe-aa36-471988da634d.png)
+
+### Multiple tenants
+If the identity you are using doesn't have Azure subscription access or has access to multiple tenants use
+- az login --allow-no-subscriptions (no access to Azure subscriptions)
+- az login --tenant <tenant id> (If user has identity in multiple tenants)
+
+![./Pictures/Login-3.jpg](./Pictures/Login-3.jpg)
+
