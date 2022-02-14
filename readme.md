@@ -62,7 +62,7 @@ Use Case Name | Notes
 
 ![./Pictures/Results-2-1.jpg](./Pictures/Results-2-1.jpg)
 
-## intentional gaps
+## Intentional gaps
 ⚠️ There are also occurences where required ResourceAccess are configured on the apps, but no permissions are granted to users via user consent, or admin consent. These occurences do not show on the report. While they also have potential for abuse, they have no active permissions granted. (this does not concern app permissions)
 
 ## Prerequisites 
