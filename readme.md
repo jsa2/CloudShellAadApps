@@ -151,7 +151,11 @@ Azure CLI is unable to obtain new access tokens for sessions, that rely on IP re
 
 ### Multiple tenants
 If the identity you are using doesn't have Azure subscription access or has access to multiple tenants use
-- az login --allow-no-subscriptions (no access to Azure subscriptions)
-- az login --tenant <tenant id> (If user has identity in multiple tenants)
+```bash 
+az login --allow-no-subscriptions ## (no access to Azure subscriptions)
+```
 
+```bash 
+az login --tenant <tenant id>  ## (If user has identity in multiple tenants)
+```
 ![./Pictures/Login-3.JPG](./Pictures/Login-3.JPG)
