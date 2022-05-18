@@ -1,0 +1,33 @@
+
+//
+//
+//
+let mstenant =  split("72f988bf-86f1-41af-91ab-2d7cd011db47,0d2db716-b331-4d7b-aa37-7f1ac9d35dae,f52f6d19-877e-4eaf-87da-9da27954c544,f8cdef31-a31e-4b4a-93e4-5f571e91255a",",");
+let sd = rolesUP
+| join kind=inner  (servicePrincipalsUP | project spnId =['id'], resourceOrg = appOwnerOrganizationId)  on $left.resourceId == $right.spnId
+| extend Principal = principalDisplayName
+| extend assigment = strcat(assignedRole)
+| extend assigmentId = ['id']
+| extend displayName = iff(principalType == "ServicePrincipal",Principal, resourceDisplayName)
+| extend assigmentL = parse_json(assignedRole)
+| mv-expand assigmentL
+| where isnotempty(assigmentL.value)
+| extend assigment = tostring(assigmentL.value)
+| extend assigmentId = ['id']
+| extend clientMatch = iff(principalType contains "Group" or principalType contains "User", resourceId, principalId)
+| join kind=inner (servicePrincipalsUP | project ['id'], homeOrganization=appOwnerOrganizationId, owners, appRoleAssignmentRequired) on $left.clientMatch == $right.['id']
+| extend AppType = case(mstenant contains homeOrganization and isnotempty( homeOrganization), 'Native MS', homeOrganization == home, "SingleTenant", isempty(homeOrganization), "managedIdentity", "MultiTenant")
+| extend RolescombinedAssignment = strcat(resourceDisplayName, '-', assigment)
+| summarize make_set(displayName) by RolescombinedAssignment, AppType;
+let gr = oauth2PermissionGrantsUP
+| join kind=inner  servicePrincipalsUP on $left.clientId == $right.['id']
+| extend Principal = iff(isempty( principalId), consentType, userPrincipalName)
+| extend AppType = case(mstenant contains appOwnerOrganizationId, 'Native MS', appOwnerOrganizationId == home, "SingleTenant", "MultiTenant")
+| extend assigment = scope
+| extend principalId = iff(isempty( principalId), clientId, principalId)
+| extend RolescombinedAssignment = strcat(resourceDisplayName, '-', assigment)
+| summarize make_set(displayName) by RolescombinedAssignment, tostring(preferredSingleSignOnMode), AppType;
+union sd, gr
+| extend countOfApps = array_length(set_displayName)
+| where isempty( preferredSingleSignOnMode)
+| project-away preferredSingleSignOnMode

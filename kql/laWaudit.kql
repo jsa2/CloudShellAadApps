@@ -1,0 +1,19 @@
+//With SignInLogs (requires that signInLogs are stored in the same space)
+let mass = materialize (union AADNonInteractiveUserSignInLogs, AADServicePrincipalSignInLogs, AADManagedIdentitySignInLogs, SigninLogs
+    | where TimeGenerated > now() -30d
+    | extend displayName = iff (isempty( AppDisplayName), ServicePrincipalName, AppDisplayName));
+let sd=   mass
+    | summarize max(TimeGenerated) by displayName
+    | join kind=inner (mass | summarize count() by displayName) on displayName
+| project-away displayName1;
+sd
+| join kind=inner final on $left.displayName == $right.clientDisplay
+| join kind=fullouter   (AuditLogs
+| where TimeGenerated > now()-1d
+| project Identity, OperationName
+| where isnotempty( Identity)
+| summarize make_set(OperationName) by Identity) on  $left.displayName == $right.Identity
+| where isnotempty( clientDisplay) 
+| extend signIns = count_
+| extend auditLogs = set_OperationName
+| project-away Identity, displayName1, count_

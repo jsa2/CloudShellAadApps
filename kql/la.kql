@@ -1,0 +1,10 @@
+//With SignInLogs (requires that signInLogs are stored in the same space)
+let mass = materialize (union AADNonInteractiveUserSignInLogs, AADServicePrincipalSignInLogs, AADManagedIdentitySignInLogs, SigninLogs
+    | where TimeGenerated > now() -30d
+    | extend displayName = iff (isempty( AppDisplayName), ServicePrincipalName, AppDisplayName));
+let sd=   mass
+    | summarize max(TimeGenerated) by displayName
+    | join kind=inner (mass | summarize count() by displayName) on displayName
+| project-away displayName1;
+sd
+| join kind=inner final on $left.displayName == $right.clientDisplay

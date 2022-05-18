@@ -1,0 +1,2 @@
+| join kind=fullouter (signins
+| summarize count() by appDisplayName| project appDisplayName, signIns=count_) on $left.clientDisplay == $right.appDisplayName | where isnotempty( clientDisplay)

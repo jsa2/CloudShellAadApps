@@ -1,0 +1,7 @@
+ //// ///////
+servicePrincipalsUP
+| where isnotempty(onPremisesPublishing)
+| project appDisplayName, appId, onPremisesPublishing
+| evaluate bag_unpack(onPremisesPublishing)
+| extend isHealthy = case(isHttpOnlyCookieEnabled == false, false, isSecureCookieEnabled == false, true, externalAuthenticationType has "aadPreAuthentication", true, false)
+/////
