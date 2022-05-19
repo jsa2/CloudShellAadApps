@@ -139,6 +139,7 @@ async function main (token) {
         }
     })
 
+
     gRsponse.map(app => {
         app.onPremisesPublishing = AppProxyApps.find( s => s.appId == app.appId)?.onPremisesPublishing || null
 
@@ -148,6 +149,38 @@ async function main (token) {
         
     })
 
+    let arr4 = []
+
+    // Get saml Apps
+    i = 0 
+   let SAMLCheck = gRsponse.filter(app => app?.preferredSingleSignOnMode == "saml" )
+
+   for await (samlApp of SAMLCheck) {
+
+    i++
+    console.log(i)
+    if (i % burstCount == 0) {
+        await waitT(1000)
+    }
+
+   
+    arr4.push( graphExtended(token,`serviceprincipals/${samlApp.id}?$select=notificationEmailAddresses,keyCredentials,id`) )
+
+
+
+   }
+
+   let samlApps = await Promise.all(arr4)
+
+    
+   gRsponse.map(app => {
+    app.samlSettings = samlApps.find( s => s.id == app.id) || null
+
+    if (app.samlSettings) {
+        console.log('sd')
+    }
+    
+})
     
     fs.writeFileSync(`${firstop}.json`,JSON.stringify(gRsponse))
 

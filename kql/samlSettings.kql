@@ -1,0 +1,12 @@
+ //// ///////
+servicePrincipalsUP
+| project samlSettings, displayName, notificationEmailAddresses
+| where isnotempty( samlSettings)
+|mv-expand samlSettings.keyCredentials
+|   mv-apply samlSettings_keyCredentials.endDateTime on   (
+    extend endDate =(datetime_diff('day',todatetime(samlSettings_keyCredentials.endDateTime),now()))
+    | extend HasExpiringPassword = endDate < 500
+    | extend info = samlSettings_keyCredentials.endDateTime
+)
+| summarize make_set(tostring(samlSettings_keyCredentials.customKeyIdentifier)) by displayName, endDateInDays = endDate, tostring(notificationEmailAddresses)
+ //// ///////
