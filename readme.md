@@ -11,7 +11,7 @@
   - [without autoRun](#without-autorun)
   - [Checking results again](#checking-results-again)
   - [Check App Proxy Apps](#check-app-proxy-apps)
-  - [Check Saml APP expiration](#check-saml-app-expiration)
+  - [Check Saml App expiration](#check-saml-app-expiration)
   - [Use existing storage account](#use-existing-storage-account)
   - [Use with different context after setting up the needed storage account](#use-with-different-context-after-setting-up-the-needed-storage-account)
   - [Use existing account with IP limitations](#use-existing-account-with-ip-limitations)
@@ -127,7 +127,12 @@ cd Cloud CloudShellAadApps
 nvm use 14; node schemaForAppProxyApps.js 
 ```
 
-### Check Saml APP expiration
+![image](https://user-images.githubusercontent.com/58001986/169269900-b59073c6-c50b-4f2d-8b70-f47c51895f24.png)
+
+
+
+
+### Check Saml App expiration
 
 Checks for email addresses and time till SAML certificate expires.
 
@@ -207,9 +212,10 @@ code kql/runtime.kql
 
 
 ## Update log
-19.05.2022 SAML App Expiration checking
-15.05.2022 added AppProxy auditing
-15.03.2022 added alternative sorting (per API) and with LA 
+
+- 19.05.2022 SAML App Expiration checking
+- 15.05.2022 added AppProxy auditing
+- 15.03.2022 added alternative sorting (per API) and with LA 
 
 **Previously**
 
