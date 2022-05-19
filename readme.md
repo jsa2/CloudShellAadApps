@@ -129,11 +129,14 @@ nvm use 14; node schemaForAppProxyApps.js
 
 ### Check Saml APP expiration
 
+Checks for email addresses and time till SAML certificate expires.
+
 ```bash
 cd Cloud CloudShellAadApps
 nvm use 14; node schemaForSaml.js 
 ```
 
+![image](https://user-images.githubusercontent.com/58001986/169268535-067dee25-45c3-4697-a600-0143e5fcc472.png)
 
 ### Use existing storage account 
 ```bash
