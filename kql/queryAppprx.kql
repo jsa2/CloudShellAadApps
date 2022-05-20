@@ -39,7 +39,7 @@ let fullUsers =oauth2PermissionGrantsUP
 | extend assigment = scope
 | extend principalId = iff(isempty( principalId), clientId, principalId)
 | extend UsersCombinedAssignment = strcat(clientId, '-'  ,Principal, '-', resourceDisplayName, ' : permissions - ', assigment, ' - ',['id'])
-| summarize make_set(UsersCombinedAssignment) by clientDisplay = displayName, AppType, tostring(owners), appOwnerOrganizationId, servicePrincipalType, appRoleAssignmentRequired, tostring(danglingRedirect)
+| summarize make_set(UsersCombinedAssignment) by clientDisplay = displayName, AppType, tostring(owners), appOwnerOrganizationId, servicePrincipalType, appRoleAssignmentRequired, tostring(danglingRedirect), tostring(onPremisesPublishing)
 | extend UserAdminGrant = iff(set_UsersCombinedAssignment contains "AllPrincipals", "True", "False")
 | extend hasWritePermissions = iff(set_UsersCombinedAssignment contains "write", "True", "False")
 | project-away servicePrincipalType;

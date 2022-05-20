@@ -121,10 +121,11 @@ nvm use 14; node main.js
 ```
 
 ### Check App Proxy Apps 
-
+- Requires further permissions like the sign-in logs query (while all other checks here work with reader)
 ```bash
 cd Cloud CloudShellAadApps
-nvm use 14; node schemaForAppProxyApps.js 
+node main --appProxyApps
+nvm use 14; node schemaForAppProxyApps.js --appProxyApps
 ```
 
 ![image](https://user-images.githubusercontent.com/58001986/169269900-b59073c6-c50b-4f2d-8b70-f47c51895f24.png)

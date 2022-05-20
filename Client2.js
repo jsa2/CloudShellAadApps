@@ -1,5 +1,7 @@
 var {graph, graphList, graphOwner, graphExtended} = require('./src/graphf')
 const fs = require('fs')
+const {argv} = require('yargs')
+
 
 module.exports={main}
 
@@ -49,7 +51,10 @@ async function main (token) {
     fs.writeFileSync(`${firstop}-save.json`,JSON.stringify(gRsponse1))
    
 
-    let proxArra = []
+    let AppProxyApps
+    if (argv.appProxyApps) {
+
+        let proxArra = []
 
     gRsponse1.filter( proxyApp => proxyApp?.web?.logoutUrl !== null).filter(s => s.web?.logoutUrl.toLowerCase().match('appproxy=logout')  )
     .forEach(prx => {
@@ -61,7 +66,10 @@ async function main (token) {
 
     })
 
-    let AppProxyApps = await Promise.all(proxArra)
+    AppProxyApps = await Promise.all(proxArra)
+
+    }
+    
 
     
 
@@ -140,14 +148,20 @@ async function main (token) {
     })
 
 
-    gRsponse.map(app => {
-        app.onPremisesPublishing = AppProxyApps.find( s => s.appId == app.appId)?.onPremisesPublishing || null
+    if (argv.appProxyApps) { 
 
-        if (app.onPremisesPublishing) {
-            console.log('sd')
-        }
-        
-    })
+        gRsponse.map(app => {
+            app.onPremisesPublishing = AppProxyApps.find( s => s.appId == app.appId)?.onPremisesPublishing || null
+    
+            if (app.onPremisesPublishing) {
+                console.log('sd')
+            }
+            
+        })
+    }
+
+
+    
 
     let arr4 = []
 
