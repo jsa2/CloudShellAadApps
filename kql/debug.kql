@@ -1,4 +1,4 @@
-////// ///////
+// ///////
 let pwInfo= servicePrincipalsUP
 | mv-expand ApplicationHasPassword
 |   mv-apply ApplicationHasPassword.endDateTime on   (
@@ -13,7 +13,7 @@ let mstenant =  split("72f988bf-86f1-41af-91ab-2d7cd011db47,0d2db716-b331-4d7b-a
 //
 //
 let roles=rolesUP
-| join kind=inner  (servicePrincipalsUP | project spnId =['id'], resourceOrg = appOwnerOrganizationId, signInAudience)  on $left.resourceId == $right.spnId
+| join kind=inner  (servicePrincipalsUP | project spnId =['id'], resourceOrg = appOwnerOrganizationId)  on $left.resourceId == $right.spnId
 | extend Principal = principalDisplayName
 | extend assigment = strcat(assignedRole)
 | extend assigmentId = ['id']
@@ -26,8 +26,7 @@ let roles=rolesUP
 | extend clientMatch = iff(principalType contains "Group" or principalType contains "User", resourceId, principalId)
 | join kind=inner (servicePrincipalsUP | project ['id'], homeOrganization=appOwnerOrganizationId, owners, appRoleAssignmentRequired) on $left.clientMatch == $right.['id']
 | extend AppType = case(mstenant contains homeOrganization and isnotempty( homeOrganization), 'Native MS', homeOrganization == home, "SingleTenant", isempty(homeOrganization), "managedIdentity", "MultiTenant")
-| extend AppType = iff(signInAudience != "AzureADMyOrg", strcat(AppType, '-', signInAudience), AppType)
-| extend RolescombinedAssignment = strcat(resourceDisplayName,' : permissions - ', principalType, ' - ', Principal,'-',assigment)
+| extend RolescombinedAssignment = strcat(clientMatch, resourceDisplayName,' : permissions - ', principalType, ':Principal:', Principal,'-',assigment, ' - ', assigmentId)
 | summarize make_set(RolescombinedAssignment) by clientDisplay, resourceOrg, AppType, tostring(owners), appRoleAssignmentRequired
 | extend hasWritePermissions = iff(set_RolescombinedAssignment contains "write", "True", "False");
 //
@@ -37,17 +36,17 @@ let fullUsers =oauth2PermissionGrantsUP
 | join kind=inner  servicePrincipalsUP on $left.clientId == $right.['id']
 | extend Principal = iff(isempty( principalId), consentType, userPrincipalName)
 | extend AppType = case(mstenant contains appOwnerOrganizationId, 'Native MS', appOwnerOrganizationId == home, "SingleTenant", "MultiTenant")
-| extend AppType = iff(signInAudience != "AzureADMyOrg", strcat(AppType, '-', signInAudience), AppType)
 | extend assigment = scope
 | extend principalId = iff(isempty( principalId), clientId, principalId)
-| extend UsersCombinedAssignment = strcat(resourceDisplayName, '- API -', assigment , '-', Principal)
+| extend UsersCombinedAssignment = strcat(clientId, '-'  ,Principal, '-', resourceDisplayName, ' : permissions - ', assigment, ' - ',['id'])
 | summarize make_set(UsersCombinedAssignment) by clientDisplay = displayName, AppType, tostring(owners), appOwnerOrganizationId, servicePrincipalType, appRoleAssignmentRequired, tostring(danglingRedirect)
 | extend UserAdminGrant = iff(set_UsersCombinedAssignment contains "AllPrincipals", "True", "False")
 | extend hasWritePermissions = iff(set_UsersCombinedAssignment contains "write", "True", "False")
 | project-away servicePrincipalType;
 let replies =oauth2PermissionGrantsUP
 | join kind=inner  servicePrincipalsUP on $left.clientId == $right.['id']
-| summarize make_set(replyUrls) by clientDisplay = displayName;
+| extend replyUrl = strcat(clientId, '-', replyUrls)
+| summarize make_set(replyUrl) by clientDisplay = displayName;
 let users = replies
 | join kind=inner ['fullUsers'] on clientDisplay;
 //
@@ -68,5 +67,4 @@ let final = f
 | join kind=fullouter  (['admins']  |project aadAdminRole=role, displayName
 | summarize make_set(aadAdminRole) by displayName )  on  $left.clientDisplay ==  $right.displayName
 | where isnotempty( clientDisplay)
-| extend warningAppPriv =iff(AppType == "MultiTenant" and isnotempty( set_RolescombinedAssignment), "true","false")
-| project-away  displayName,clientDisplay2;
+| extend warningAppPriv =iff(AppType == "MultiTenant" and isnotempty( set_RolescombinedAssignment), "true","false");

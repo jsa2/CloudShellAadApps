@@ -16,4 +16,4 @@ sd
 | where isnotempty( clientDisplay) 
 | extend signIns = count_
 | extend auditLogs = set_OperationName
-| project-away Identity, displayName1, count_
+| project-away Identity, count_
