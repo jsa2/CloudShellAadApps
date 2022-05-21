@@ -19,6 +19,7 @@
   - [Alternative Sorting (per API)](#alternative-sorting-per-api)
   - [With SignInLogs (only shows apps that have sign-in data - requires workspace with signins)](#with-signinlogs-only-shows-apps-that-have-sign-in-data---requires-workspace-with-signins)
   - [With SignIn and auditLogs (only shows apps that have sign-in data - requires workspace with signins)](#with-signin-and-auditlogs-only-shows-apps-that-have-sign-in-data---requires-workspace-with-signins)
+  - [Check for plaintext redirectURI's](#check-for-plaintext-redirecturis)
 - [Update log](#update-log)
 - [Known issues](#known-issues)
   - [Continous Access Evaluation](#continous-access-evaluation)
@@ -211,6 +212,19 @@ code kql/runtime.kql
 cd Cloud CloudShellAadApps
 nvm use 14; node schemaForExternalDataLAsignisAndAudit.js 
 code kql/runtime.kql
+```
+
+### Check for plaintext redirectURI's
+- append this part to 
+```
+nvm use 14; node schemaForExternalData.js
+code kql/runtime.kql
+// in log analytics Append this to runtime.kql
+final
+| mv-apply url = set_replyUrls to typeof(string) on (
+where (url contains "http://" and url !contains "http://localhost") 
+)
+
 ```
 
 
