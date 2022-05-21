@@ -229,7 +229,9 @@ where (url contains "http://" and url !contains "http://localhost")
 
 ![image](https://user-images.githubusercontent.com/58001986/169637591-5decbb5e-8e24-4078-a3c5-01411bfb9811.png)
 
+Example of insecure non localhost redirectURI:
 
+![image](https://user-images.githubusercontent.com/58001986/169637895-edb48f0b-3e62-4001-b654-a8a341fdc5ac.png)
 
 
 ## Update log
