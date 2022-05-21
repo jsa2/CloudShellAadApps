@@ -215,7 +215,7 @@ code kql/runtime.kql
 ```
 
 ### Check for plaintext redirectURI's
-- append this part to runtime.kql
+- append this part to runtime.kql after node schemaForExternalData.js is run
 ```
 nvm use 14; node schemaForExternalData.js
 code kql/runtime.kql;
@@ -225,6 +225,11 @@ where (url contains "http://" and url !contains "http://localhost")
 )
 
 ```
+
+
+![image](https://user-images.githubusercontent.com/58001986/169637591-5decbb5e-8e24-4078-a3c5-01411bfb9811.png)
+
+
 
 
 ## Update log
