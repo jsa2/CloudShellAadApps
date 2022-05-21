@@ -112,6 +112,8 @@ curl -o- https://raw.githubusercontent.com/jsa2/CloudShellAadApps/public/remoteI
 
 **Each of this step requires that you then copy the query kql/runtime.kql and paste it in log analytics**
 
+As pointed out earlier, these can be run, once you've run the initial run with main.js
+
 ---
 
 ### Checking results again
