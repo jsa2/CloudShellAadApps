@@ -215,11 +215,10 @@ code kql/runtime.kql
 ```
 
 ### Check for plaintext redirectURI's
-- append this part to 
+- append this part to runtime.kql
 ```
 nvm use 14; node schemaForExternalData.js
-code kql/runtime.kql
-// in log analytics Append this to runtime.kql
+code kql/runtime.kql;
 final
 | mv-apply url = set_replyUrls to typeof(string) on (
 where (url contains "http://" and url !contains "http://localhost") 
