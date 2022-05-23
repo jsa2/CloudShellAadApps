@@ -13,7 +13,7 @@ var tid = fs.readFileSync('kql/tid.txt').toString()
 var fullSchema = `let home="${tid}"; \n //`
 for await (file of files) {
     
-    var content = require(`./${pathLoc}/${file}`)
+  var content = require(`./${pathLoc}/${file}`).filter(app => app.appDisplayName !== null)
     //console.log( chalk.yellow('\nschema for', file, '\n' ))
     var schema = `\nlet ${file.split('.json')[0]} = (externaldata (`
     
