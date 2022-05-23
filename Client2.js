@@ -164,7 +164,7 @@ async function main (token) {
     
 
     let arr4 = []
-
+    let samlApps = []
     // Get saml Apps
     i = 0 
    let SAMLCheck = gRsponse.filter(app => app?.preferredSingleSignOnMode == "saml" )
@@ -173,18 +173,21 @@ async function main (token) {
 
     i++
     console.log(i)
-    if (i % burstCount == 0) {
+    if (i % 5 == 0) {
         await waitT(1000)
     }
 
    
-    arr4.push( graphExtended(token,`serviceprincipals/${samlApp.id}?$select=notificationEmailAddresses,keyCredentials,id`) )
+    arr4.push( graphExtended(token,`serviceprincipals/${samlApp.id}?$select=notificationEmailAddresses,keyCredentials,id`).then(data => {
+        console.log(data)
+        samlApps.push(data)
+    }).catch(error => console.log(error?.response?.data)) )
 
 
 
    }
 
-   let samlApps = await Promise.all(arr4)
+   await Promise.all(arr4)
 
     
    gRsponse.map(app => {
