@@ -71,4 +71,5 @@ let final = f
 | join kind= fullouter  (servicePrincipalsUP | project appDisplayName, signInAudience) on $left.clientDisplay == $right.appDisplayName
 | extend signInAudience = iff(isempty(signInAudience) and AppType !contains "managedIdentity", 'Review appType manually !', signInAudience)
 | where isnotempty( clientDisplay)
-| extend AppType = iff(signInAudience !has "AzureADMyOrg" and AppType == "SingleTenant", strcat(AppType, '-', signInAudience), AppType);
+| extend AppType = iff(signInAudience !has "AzureADMyOrg" and AppType == "SingleTenant", strcat(AppType, '-', signInAudience), AppType)
+| project-away signInAudience;
