@@ -1,0 +1,11 @@
+//
+let mass = AADServicePrincipalSignInLogs
+    | where TimeGenerated > now() -30d
+    | extend displayName = ServicePrincipalName;
+let sd=   mass
+    | summarize max(TimeGenerated) by displayName
+    | join kind=inner (mass | summarize count() by displayName) on displayName
+| project-away displayName1;
+sd
+| join kind=inner final on $left.displayName == $right.clientDisplay
+| where AppType == "MultiTenant" and isempty( set_RolescombinedAssignment)

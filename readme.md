@@ -19,6 +19,7 @@
   - [Alternative Sorting (per API)](#alternative-sorting-per-api)
   - [With SignInLogs (only shows apps that have sign-in data - requires workspace with signins)](#with-signinlogs-only-shows-apps-that-have-sign-in-data---requires-workspace-with-signins)
   - [With SignIn and auditLogs (only shows apps that have sign-in data - requires workspace with signins)](#with-signin-and-auditlogs-only-shows-apps-that-have-sign-in-data---requires-workspace-with-signins)
+  - [Check for abuse of multitenant ServicePrincipals](#check-for-abuse-of-multitenant-serviceprincipals)
   - [Check for plaintext redirectURI's](#check-for-plaintext-redirecturis)
 - [Update log](#update-log)
 - [Known issues](#known-issues)
@@ -211,6 +212,14 @@ code kql/runtime.kql
 ```bash
 cd Cloud CloudShellAadApps
 nvm use 14; node schemaForExternalDataLAsignisAndAudit.js 
+code kql/runtime.kql
+```
+
+### Check for abuse of multitenant ServicePrincipals
+- Checks if possibly malicious multitenant SPN's with no app permissions present are using client credentials based flows against apps in your tenant
+```bash
+cd Cloud CloudShellAadApps
+nvm use 14; node schemaForMaliciousMultiTenant.js
 code kql/runtime.kql
 ```
 
