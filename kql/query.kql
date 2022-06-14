@@ -1,4 +1,4 @@
- //////// ///////
+ // //////// ///////
 let pwInfo= servicePrincipalsUP
 | mv-expand ApplicationHasPassword
 |   mv-apply ApplicationHasPassword.endDateTime on   (
@@ -26,7 +26,6 @@ let roles=rolesUP
 | extend clientMatch = iff(principalType contains "Group" or principalType contains "User", resourceId, principalId)
 | join kind=inner (servicePrincipalsUP | project ['id'], homeOrganization=appOwnerOrganizationId, owners, appRoleAssignmentRequired) on $left.clientMatch == $right.['id']
 | extend AppType = case(mstenant contains homeOrganization and isnotempty( homeOrganization), 'Native MS', homeOrganization == home, "SingleTenant", isempty(homeOrganization), "managedIdentity", "MultiTenant")
-| extend AppType = iff(signInAudience contains "Multiple" and AppType == "SingleTenant", strcat(AppType, '-', signInAudience), AppType)
 | extend RolescombinedAssignment = strcat(resourceDisplayName,' : permissions - ', principalType, ' - ', Principal,'-',assigment)
 | summarize make_set(RolescombinedAssignment) by clientDisplay, resourceOrg, AppType, tostring(owners), appRoleAssignmentRequired
 | extend hasWritePermissions = iff(set_RolescombinedAssignment contains "write", "True", "False");
@@ -37,7 +36,6 @@ let fullUsers =oauth2PermissionGrantsUP
 | join kind=inner  servicePrincipalsUP on $left.clientId == $right.['id']
 | extend Principal = iff(isempty( principalId), consentType, userPrincipalName)
 | extend AppType = case(mstenant contains appOwnerOrganizationId, 'Native MS', appOwnerOrganizationId == home, "SingleTenant", "MultiTenant")
-| extend AppType = iff(signInAudience contains "Multiple" and AppType == "SingleTenant", strcat(AppType, '-', signInAudience), AppType)
 | extend assigment = scope
 | extend principalId = iff(isempty( principalId), clientId, principalId)
 | extend UsersCombinedAssignment = strcat(resourceDisplayName, '- API -', assigment , '-', Principal)
@@ -69,4 +67,7 @@ let final = f
 | summarize make_set(aadAdminRole) by displayName )  on  $left.clientDisplay ==  $right.displayName
 | where isnotempty( clientDisplay)
 | extend warningAppPriv =iff(AppType == "MultiTenant" and isnotempty( set_RolescombinedAssignment), "true","false")
-| project-away  displayName,clientDisplay2;
+| project-away  displayName,clientDisplay2
+| join kind= fullouter  (servicePrincipalsUP | project appDisplayName, signInAudience) on $left.clientDisplay == $right.appDisplayName
+| where isnotempty( clientDisplay)
+| extend AppType = iff(signInAudience !has "AzureADMyOrg" and AppType == "SingleTenant", strcat(AppType, '-', signInAudience), AppType);
