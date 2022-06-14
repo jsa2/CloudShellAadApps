@@ -69,5 +69,6 @@ let final = f
 | extend warningAppPriv =iff(AppType == "MultiTenant" and isnotempty( set_RolescombinedAssignment), "true","false")
 | project-away  displayName,clientDisplay2
 | join kind= fullouter  (servicePrincipalsUP | project appDisplayName, signInAudience) on $left.clientDisplay == $right.appDisplayName
+| extend signInAudience = iff(isempty(signInAudience), 'Review appType manually !', signInAudience)
 | where isnotempty( clientDisplay)
 | extend AppType = iff(signInAudience !has "AzureADMyOrg" and AppType == "SingleTenant", strcat(AppType, '-', signInAudience), AppType);
