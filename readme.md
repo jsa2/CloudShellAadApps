@@ -75,7 +75,7 @@ Use Case Name | Notes
 ✅ WarningAppPrivs | is multitenant application with app permissions <br> this permission type is very potent for the attacker, because the app owner does not needed signed-in user content (delegation) in the victim tenant to access services granted to the app
 ✅ expiration | Detect SAML certificate and client credential
 ✅ Owners | review app owners
-✅ audit app proxy applications | this on requires further permissions (Security Reader)
+✅ audit app proxy applications | this one requires further permissions: <br> ``microsoft.directory/connectors/allProperties/read`` - Read all properties of application proxy connectors
 
 ![./Pictures/Results-2-1.jpg](./Pictures/Results-2-1.jpg)
 
