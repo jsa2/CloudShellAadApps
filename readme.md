@@ -70,7 +70,12 @@ Use Case Name | Notes
 ✅ Detect recent sign-ins | Get insights on how apps are used in the organization (this API is setting not enabled by default)
 ✅ Detect servicePrincipals in admin roles | It is in most cases recommended to use API permissions instead of AAD roles 
 ✅ Detect dangling redirect_uri | If the app service is deleted, but redirect_uri is not deleted from the Azure AD app registration, attacker could register the App Service instance for malicious intent.
-
+✅ User assignment | review if app has user assigment enabled
+✅ HasPublicClient | review if app allows public client flows (non redirect uri based flows)
+✅ WarningAppPrivs | is multitenant application with app permissions <br> this permission type is very potent for the attacker, because the app owner does not needed signed-in user content (delegation) in the victim tenant to access services granted to the app
+✅ expiration | Detect SAML certificate and client credential
+✅ Owners | review app owners
+✅ audit app proxy applications | this on requires further permissions (Security Reader)
 
 ![./Pictures/Results-2-1.jpg](./Pictures/Results-2-1.jpg)
 
