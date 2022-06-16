@@ -76,6 +76,8 @@ Use Case Name | Notes
 ✅ expiration | Detect SAML certificate and client credential
 ✅ Owners | review app owners
 ✅ audit app proxy applications | this one requires further permissions: <br> ``microsoft.directory/connectors/allProperties/read`` - Read all properties of application proxy connectors
+✅Check permissionless use of possibly malicious multitenant ServicePrincipals |[``Check permissionless use of possibly malicious multitenant ServicePrincipals``](#check-permissionless-use-of-possibly-malicious-multitenant-serviceprincipals)
+✅ Check for plaintext redirectURI's | [``Check for plaintext redirectURI's``](#check-for-plaintext-redirecturis)
 
 ![./Pictures/Results-2-1.jpg](./Pictures/Results-2-1.jpg)
 
