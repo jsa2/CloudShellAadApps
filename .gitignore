@@ -5,6 +5,7 @@ runtime.kql
 tid.txt
 # exclude from JSON flag
 !package.json
+!package-lock.json
 !doNotRemove.json
 !retention.json
 
