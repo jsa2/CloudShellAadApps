@@ -1,4 +1,7 @@
 
+
+**This tool is not maintained anymore, please consider using https://github.com/jsa2/AADAppAudit**
+
 - [License](#license)
 - [Consent and Azure AD application Analytics solution](#consent-and-azure-ad-application-analytics-solution)
   - [Illicit Consent Grant](#illicit-consent-grant)
