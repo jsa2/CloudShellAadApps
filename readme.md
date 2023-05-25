@@ -44,9 +44,11 @@ As the licenses says, 0%  Liability 0% Warranty
 
 ---
 
-#This tool is not maintained anymore, please consider using https://github.com/jsa2/AADAppAudit
+# This tool is not maintained anymore, please consider using https://github.com/jsa2/AADAppAudit
 
 ## Consent and Azure AD application Analytics solution
+
+# This tool is not maintained anymore, please consider using https://github.com/jsa2/AADAppAudit
 Azure AD consent framework analysis is important step to strengthen security posture in every organization that is using Azure Active Directory. This tool was initially developed to analyze possible illicit consent grant attacks & in help of analyzing Azure AD consent grant framework but has been developed further since to provide answers to the most typical security related questions around Azure AD integrated apps and permissions.
 
 ### Illicit Consent Grant
